@@ -13,6 +13,8 @@ import stl_reader
 import perimeter
 from util import arrayToWhiteGreyscalePixel, padVoxelArray
 
+from utils.coordinates import translation, scaling
+
 
 def doExport(inputFilePath, outputFilePath, resolution):
     mesh = list(stl_reader.read_stl_verticies(inputFilePath))
@@ -34,6 +36,7 @@ def doExport(inputFilePath, outputFilePath, resolution):
         exportXyz(vol, bounding_box, outputFilePath)
     elif outputFileExtension == '.svx':
         exportSvx(vol, bounding_box, outputFilePath, scale, shift)
+    return np.linalg.inv(scaling(*scale) @ translation(*shift))
 
 def exportPngs(voxels, bounding_box, outputFilePath):
     size = str(len(str(bounding_box[2]))+1)
