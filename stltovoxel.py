@@ -11,10 +11,7 @@ import numpy as np
 import slice
 import stl_reader
 import perimeter
-from util import arrayToWhiteGreyscalePixel, padVoxelArray
-
-from utils.coordinates import translation, scaling
-
+from util import arrayToWhiteGreyscalePixel, padVoxelArray, translation, scaling
 
 def doExport(inputFilePath, outputFilePath, resolution):
     mesh = list(stl_reader.read_stl_verticies(inputFilePath))

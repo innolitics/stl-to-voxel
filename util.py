@@ -39,3 +39,19 @@ def padVoxelArray(voxels):
             for c in range(shape[2]):
                 vol[a+1,b+1,c+1] = voxels[a,b,c]
     return vol, (new_shape[1],new_shape[2],new_shape[0])
+
+def scaling(x=1, y=1, z=1):
+    return np.array([
+        [x, 0, 0, 0],
+        [0, y, 0, 0],
+        [0, 0, z, 0],
+        [0, 0, 0, 1]
+    ], dtype='f')
+
+def translation(x=0, y=0, z=0):
+    return np.array([
+        [1, 0, 0, x],
+        [0, 1, 0, y],
+        [0, 0, 1, z],
+        [0, 0, 0, 1]
+    ], dtype='f')
