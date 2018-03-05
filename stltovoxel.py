@@ -35,6 +35,19 @@ def doExport(inputFilePath, outputFilePath, resolution):
         exportSvx(vol, bounding_box, outputFilePath, scale, shift)
     return np.linalg.inv(scaling(*scale) @ translation(*shift))
 
+def calculateResolution(inputFilePath, voxelSpacing):
+    mesh = list(stl_reader.read_stl_verticies(inputFilePath))
+    allPoints = [item for sublist in mesh for item in sublist]
+    mins = np.array([0, 0, 0])
+    maxs = np.array([0, 0, 0])
+    for i in range(3):
+        mins[i] = min(allPoints, key=lambda tri: tri[i])[i]
+        maxs[i] = max(allPoints, key=lambda tri: tri[i])[i]
+    ranges = maxs - mins
+    maxRange = ranges[:2].max()
+    resolution = int(maxRange / voxelSpacing)
+    return resolution
+
 def exportPngs(voxels, bounding_box, outputFilePath):
     size = str(len(str(bounding_box[2]))+1)
     outputFilePattern, outputFileExtension = os.path.splitext(outputFilePath)

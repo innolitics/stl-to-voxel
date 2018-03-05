@@ -122,5 +122,3 @@ def scaleAndShiftMesh(mesh, scale, shift):
             yield newTri
         else:
             pass
-
-
