@@ -11,7 +11,7 @@ import numpy as np
 import slice
 import stl_reader
 import perimeter
-from util import arrayToWhiteGreyscalePixel, padVoxelArray, translation, scaling
+from util import arrayToWhiteGreyscalePixel, padVoxelArray
 
 def doExport(inputFilePath, outputFilePath, resolution):
     mesh = list(stl_reader.read_stl_verticies(inputFilePath))
@@ -33,7 +33,7 @@ def doExport(inputFilePath, outputFilePath, resolution):
         exportXyz(vol, bounding_box, outputFilePath)
     elif outputFileExtension == '.svx':
         exportSvx(vol, bounding_box, outputFilePath, scale, shift)
-    return np.linalg.inv(scaling(*scale) @ translation(*shift))
+    return np.array(scale), np.array(shift)
 
 def calculateResolution(inputFilePath, voxelSpacing):
     mesh = list(stl_reader.read_stl_verticies(inputFilePath))
