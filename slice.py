@@ -96,6 +96,7 @@ def whereLineCrossesZ(p1, p2, z):
 
 
 def calculateScaleAndShift(mesh, resolution):
+    resolution = resolution - 2  # TODO: find out why this is necessary
     allPoints = [item for sublist in mesh for item in sublist]
     mins = [0, 0, 0]
     maxs = [0, 0, 0]
