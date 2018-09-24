@@ -1,9 +1,5 @@
 import math
-import itertools
 
-import numpy as np
-
-import perimeter
 from util import manhattanDistance, removeDupsFromPointList
 
 def toIntersectingLines(mesh, height):
@@ -96,19 +92,21 @@ def whereLineCrossesZ(p1, p2, z):
 
 
 def calculateScaleAndShift(mesh, resolution):
-    resolution = resolution - 2  # TODO: find out why this is necessary
     allPoints = [item for sublist in mesh for item in sublist]
     mins = [0, 0, 0]
     maxs = [0, 0, 0]
     for i in range(3):
         mins[i] = min(allPoints, key=lambda tri: tri[i])[i]
         maxs[i] = max(allPoints, key=lambda tri: tri[i])[i]
-    shift = [-min for min in mins]
-    xyscale = float(resolution - 1) / (max(maxs[0] - mins[0], maxs[1] - mins[1]))
+    shift = [-m for m in mins]
+    # We want the edges of the model to fall on the centers of the outer pixels. Therefore,
+    # the model is spread out over 1 px less than the resolution.
+    xyscale = float(resolution - 1) / max(maxs[0] - mins[0], maxs[1] - mins[1])
     #TODO: Change this to return one scale. If not, verify svx exporting still works.
     scale = [xyscale, xyscale, xyscale]
-    bounding_box = [resolution, resolution, math.ceil((maxs[2] - mins[2]) * xyscale)]
-    return (scale, shift, bounding_box)
+    # Add 1 px to the z dimension to ensure that there is at least a 0.5 px buffer on each side.
+    bounding_box = [resolution, resolution, math.ceil((maxs[2] - mins[2]) * xyscale) + 1]
+    return scale, shift, bounding_box
 
 
 def scaleAndShiftMesh(mesh, scale, shift):

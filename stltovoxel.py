@@ -1,4 +1,6 @@
 import argparse
+import math
+
 import os.path
 import io
 import xml.etree.cElementTree as ET
@@ -25,7 +27,7 @@ def doExport(inputFilePath, outputFilePath, resolution):
         prepixel = np.zeros((bounding_box[0], bounding_box[1]), dtype=bool)
         perimeter.linesToVoxels(lines, prepixel)
         vol[height] = prepixel
-    vol, bounding_box = padVoxelArray(vol)
+    #vol, bounding_box = padVoxelArray(vol)
     outputFilePattern, outputFileExtension = os.path.splitext(outputFilePath)
     if outputFileExtension == '.png':
         exportPngs(vol, bounding_box, outputFilePath)
@@ -38,15 +40,15 @@ def doExport(inputFilePath, outputFilePath, resolution):
 def calculateResolution(inputFilePath, voxelSpacing):
     mesh = list(stl_reader.read_stl_verticies(inputFilePath))
     allPoints = [item for sublist in mesh for item in sublist]
-    mins = np.array([0, 0, 0])
-    maxs = np.array([0, 0, 0])
+    mins = np.zeros(3)
+    maxs = np.zeros(3)
     for i in range(3):
         mins[i] = min(allPoints, key=lambda tri: tri[i])[i]
         maxs[i] = max(allPoints, key=lambda tri: tri[i])[i]
     ranges = maxs - mins
     maxRange = ranges[:2].max()
-    resolution = int(maxRange / voxelSpacing)
-    return resolution
+    # Add a 0.5 px buffer on each side.
+    return math.ceil(maxRange / voxelSpacing) + 1
 
 def exportPngs(voxels, bounding_box, outputFilePath):
     size = str(len(str(bounding_box[2]))+1)
